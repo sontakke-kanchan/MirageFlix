@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-
 import { Text } from "@mantine/core";
-
 import ShowRow from "../shared/ShowRow";
-
 import ShowCard from "../shared/ShowCard";
-
 import { tmdbConfig } from "../../config/tmdb";
 
 type Show = {
   id: number;
   title: string;
-  posterUrl: string | undefined;
-  backdropUrl: string | undefined;
+  posterUrl: string | null;
+  backdropUrl: string | null;
   year?: number;
 };
 
@@ -26,14 +22,11 @@ export default function SlowShowRow({ query = "" }: Props) {
   const [allShows, setAllShows] = useState<Show[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ❌ Fetch inside component (baseline)
-
   useEffect(() => {
     fetch(
       `${tmdbConfig.baseUrl}/trending/movie/week?api_key=${tmdbConfig.apiKey}`,
     )
       .then((res) => res.json())
-
       .then((data) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mapped: Show[] = data.results.map((m: any) => ({
@@ -41,18 +34,17 @@ export default function SlowShowRow({ query = "" }: Props) {
           title: m.title,
           posterUrl: m.poster_path
             ? `${tmdbConfig.imageBaseUrl}${m.poster_path}`
-            : undefined,
+            : null,
           backdropUrl: m.backdrop_path
             ? `https://image.tmdb.org/t/p/original${m.backdrop_path}`
-            : undefined,
+            : null,
           year: m.release_date
             ? new Date(m.release_date).getFullYear()
             : undefined,
         }));
 
-        // 😈 Artificial data explosion
-
-        const inflated = Array.from({ length: 10 }).flatMap((_, index) =>
+        // ⚠️ Mild data inflation (not insane)
+        const inflated = Array.from({ length: 40 }).flatMap((_, index) =>
           mapped.map((item) => ({
             ...item,
             id: item.id * 100 + index,
@@ -64,17 +56,10 @@ export default function SlowShowRow({ query = "" }: Props) {
       });
   }, []);
 
-  // ❌ Expensive filter on EVERY render / keystroke
-
-  const filteredShows = allShows.filter((show) => {
-    const title = show.title.toLowerCase();
-    const q = query.toLowerCase();
-
-    // 😈 Fake expensive CPU work
-
-    for (let i = 0; i < 5000; i++) { /* empty */ }
-    return title.includes(q);
-  });
+  // ❌ Still inefficient: filter on every render
+  const filteredShows = allShows.filter((show) =>
+    show.title.toLowerCase().includes(query.toLowerCase()),
+  );
 
   if (loading) {
     return <Text c="dark.2">Loading…</Text>;
@@ -87,7 +72,7 @@ export default function SlowShowRow({ query = "" }: Props) {
           key={show.id}
           title={show.title}
           year={show.year}
-          posterUrl={show.posterUrl}
+          posterUrl={show.posterUrl ?? undefined}
         />
       ))}
     </ShowRow>

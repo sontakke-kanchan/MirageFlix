@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState, useDeferredValue } from "react";
 import { Text } from "@mantine/core";
-import ShowRow from "../shared/ShowRow";
+import { Carousel } from "@mantine/carousel";
+import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import ShowCard from "../shared/ShowCard";
 import { tmdbConfig } from "../../config/tmdb";
 
@@ -8,7 +10,6 @@ type Show = {
   id: number;
   title: string;
   posterUrl: string | null;
-  backdropUrl: string | null;
   year?: number;
 };
 
@@ -17,17 +18,10 @@ type Props = {
 };
 
 export default function OptimizedShowRow({ query = "" }: Props) {
-  console.count("OptimizedShowRow render");
-
   const [allShows, setAllShows] = useState<Show[]>([]);
-
   const [loading, setLoading] = useState(true);
 
-  // ✅ Defer search input so typing stays responsive
-
   const deferredQuery = useDeferredValue(query);
-
-  // ✅ Fetch once, clean mapping
 
   useEffect(() => {
     fetch(
@@ -35,40 +29,25 @@ export default function OptimizedShowRow({ query = "" }: Props) {
     )
       .then((res) => res.json())
       .then((data) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mapped: Show[] = data.results.map((m: any) => ({
           id: m.id,
           title: m.title,
           posterUrl: m.poster_path
             ? `${tmdbConfig.imageBaseUrl}${m.poster_path}`
             : null,
-          backdropUrl: m.backdrop_path
-            ? `https://image.tmdb.org/t/p/original${m.backdrop_path}`
-            : null,
           year: m.release_date
             ? new Date(m.release_date).getFullYear()
             : undefined,
         }));
 
-        // same dataset size as slow version (fair comparison)
-
-        const inflated = Array.from({ length: 10 }).flatMap((_, index) =>
-          mapped.map((item) => ({
-            ...item,
-            id: item.id * 100 + index,
-          })),
-        );
-
-        setAllShows(inflated);
+        setAllShows(mapped);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
-
-  // ✅ Memoized filtering
 
   const filteredShows = useMemo(() => {
     const q = deferredQuery.toLowerCase();
-
     return allShows.filter((show) => show.title.toLowerCase().includes(q));
   }, [allShows, deferredQuery]);
 
@@ -77,15 +56,56 @@ export default function OptimizedShowRow({ query = "" }: Props) {
   }
 
   return (
-    <ShowRow>
+    <Carousel
+      slideSize="auto"
+      slideGap="md"
+      withControls
+      controlSize={40}
+      nextControlIcon={<IconChevronRight size={32} />}
+      previousControlIcon={<IconChevronLeft size={32} />}
+      styles={{
+        controls: {
+          top: "50%",
+          transform: "translateY(-50%)",
+          transition: "opacity 150ms ease",
+          zIndex: 2,
+        },
+
+        control: {
+          backgroundColor: "transparent",
+          border: "none",
+          boxShadow: "none",
+          color: "#fff",
+
+          "&[data-inactive]": {
+            opacity: 0,
+            pointerEvents: "none",
+          },
+
+          "&:hover": {
+            backgroundColor: "transparent",
+            color: "#8A2BE2", // KS accent
+          },
+        },
+
+        indicator: {
+          display: "none",
+        },
+      }}
+      className="group"
+    >
       {filteredShows.map((show) => (
-        <ShowCard
-          key={show.id}
-          title={show.title}
-          year={show.year}
-          posterUrl={show.posterUrl ?? undefined}
-        />
+        <Carousel.Slide key={show.id}>
+          {/* 🔑 FIXED WIDTH WRAPPER */}
+          <div style={{ width: 160 }}>
+            <ShowCard
+              title={show.title}
+              year={show.year}
+              posterUrl={show.posterUrl ?? undefined}
+            />
+          </div>
+        </Carousel.Slide>
       ))}
-    </ShowRow>
+    </Carousel>
   );
 }

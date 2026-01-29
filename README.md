@@ -1,73 +1,108 @@
-# React + TypeScript + Vite
+# MirageFlix 🎬
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MirageFlix is a **performance-focused React application** designed to demonstrate how intentional optimizations can significantly improve user experience in data-heavy interfaces.
 
-Currently, two official plugins are available:
+The project compares **baseline (slow)** and **optimized** implementations side by side using real-world movie data from the TMDB API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> ⚠️ **Disclaimer**  
+> MirageFlix is a **Netflix-inspired UI concept** created purely for educational and portfolio purposes.  
+> It is **not affiliated with, endorsed by, or connected to Netflix** in any way.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Key Highlights
 
-## Expanding the ESLint configuration
+- Dark-mode, streaming-style UI with custom brand theme
+- Real-time search experience
+- Cinematic hero banner with integrated search
+- Multiple movie rows
+- Intentional performance bottlenecks (baseline)
+- Optimized rendering using modern React techniques
+- Clean architecture for easy comparison and demos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ⚡ Performance Showcase
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+MirageFlix intentionally includes **two parallel implementations** to highlight performance differences.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🐢 Slow (Baseline)
+
+Demonstrates common real-world performance pitfalls:
+
+- Filtering on every keystroke
+- No memoization
+- Uncontrolled re-renders
+- Noticeable typing and interaction lag
+
+### 🚀 Optimized
+
+Applies targeted optimization strategies:
+
+- Deferred input handling
+- Memoized computations
+- Controlled rendering
+- Smooth typing and scrolling experience
+
+You can switch between implementations without changing imports, making performance differences easy to observe and explain during demos or interviews.
+
+📖 A detailed breakdown is available in  
+[`docs/performance.md`](./docs/performance.md)
+
+---
+
+## 🛠 Tech Stack
+
+- **React**
+- **TypeScript**
+- **Mantine UI**
+- **Tailwind CSS**
+- **TMDB API**
+- **Tabler Icons**
+
+---
+
+## 🚀 Getting Started
+
+### 1️⃣ Install dependencies
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2️⃣ Add environment variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+Create a .env.local file in the project root:
+```
+
+### 3️⃣ Start the development server
+
+```
+npm run dev
+```
+
+The app will be available at http://localhost:5173 (default Vite port).
+
+## Why MirageFlix?
+
+This project was built to:
+
+-Understand real-world React performance issues
+-Practice optimization techniques used in production apps
+-Create a portfolio project beyond basic CRUD demos
+Confidently explain performance tradeoffs in interviews
+
+MirageFlix focuses on intentional slowness first, followed by measured optimizations, mirroring how performance problems are identified and solved in real applications.
+
+## Future Improvements
+
+-Virtualized rows for extremely large datasets
+-Server-side pagination
+-Image loading and caching optimizations
+-Performance metrics and benchmarks
+
+## 👤 Author
+
+Built by **KS**  
+Frontend Engineer • React Specialist

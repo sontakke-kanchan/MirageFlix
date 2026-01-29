@@ -1,11 +1,20 @@
 import { Button, Stack, Title, Text, Group } from "@mantine/core";
 import { IconPlayerPlay, IconInfoCircle } from "@tabler/icons-react";
+import SearchBar from "./SearchBar";
 type Props = {
   title: string;
   tagline: string;
   backdropUrl?: string;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
 };
-export default function HeroBanner({ title, tagline, backdropUrl }: Props) {
+export default function HeroBanner({
+  title,
+  tagline,
+  backdropUrl,
+  searchQuery,
+  onSearchChange,
+}: Props) {
   return (
     <section
       aria-labelledby="hero-title"
@@ -28,7 +37,7 @@ export default function HeroBanner({ title, tagline, backdropUrl }: Props) {
         <div className="absolute inset-0 bg-gradient-to-tr from-violet-900/30 to-transparent" />
       </div>
       {/* Content */}
-      <div className="relative px-8 py-8 md:px-14 md:py-14 lg:py-20 lg:px-20">
+      <div className="relative px-8 py-8 md:px-14 md:py-14 lg:py-16 lg:px-16">
         <Stack gap="sm" maw={520}>
           <Title id="hero-title" order={1} c="dark.0">
             {title}
@@ -50,6 +59,10 @@ export default function HeroBanner({ title, tagline, backdropUrl }: Props) {
               More Info
             </Button>
           </Group>
+          {/* 🔍 Search INSIDE hero */}
+          <div className="pt-4 max-w-md">
+            <SearchBar value={searchQuery} onChange={onSearchChange} />
+          </div>
         </Stack>
       </div>
     </section>

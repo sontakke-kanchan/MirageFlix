@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.group:hover .mantine-Carousel-controls {
+    opacity: 1;
+}
