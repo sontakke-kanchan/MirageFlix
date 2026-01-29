@@ -13,7 +13,7 @@ export default function HomePage() {
     performanceConfig.mode === "slow" ? SlowShowRow : OptimizedShowRow;
   return (
     <AppShell header={{ height: 64 }} padding={0}>
-      <AppShell.Header className="border-b border-white/5 bg-black/80 backdrop-blur">
+      <AppShell.Header className="border-b border-white/5 bg-black/60 backdrop-blur">
         <AppHeader />
       </AppShell.Header>
 
